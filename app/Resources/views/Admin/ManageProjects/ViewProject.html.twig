@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block body  %}
+    <body style="font-size:120%;" class="hold-transition skin-blue sidebar-mini">
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+
+    <div id="container">
+
+        <div class="wrapper">
+            {% include 'AdminHeader.html.twig' %}
+
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+
+                <section class="content-header">
+                    <a href="{{ path('ManageProjects',{'pageNumber': pageNumber})}}"  style="color:white;background-color:rgb(60,141,188)" class="btn btn-primary" ><i style="font-size:15px" class="material-icons">fast_rewind</i>Back</a>
+                    <ol class="breadcrumb">
+                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li class="active">Manage Projects</li>
+                        <li class="active">View Project</li>
+                    </ol>
+                </section>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <img class="img-circle avatar avatar-original" style="-webkit-user-select:none;
+              display:block; margin:auto;height: 150px; width: 150px;" src="{{ asset('images/redfern.jpg') }}" >
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <h3 class="only-bottom-margin">Project Information</h3>
+                                </div>
+                            </div>
+                            <div class="row" >
+                                <div class="col-md-6">
+                                   {% if project is defined %}
+                                        <h5><span class="text-muted">Project ID: </span>{{ project.project_id }}</h5>
+                                        <h5><span class="text-muted">Project Name: </span>{{ project.project_name }}</h5>
+                                        <h5><span class="text-muted">Head Of Project: </span>{{ project.first_name }} {{ project.last_name }}</h5>
+                                        <h5><span class="text-muted">Registration Date: </span>{{ project.date_of_project|date('Y-m-d') }}</h5>
+                                   {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-md-4 text-center">
+                        </div>
+                        <div class="col-md-8">
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3 class="only-bottom-margin">Description</h3>
+                                </div>
+                            </div>
+                            <div class="row" >
+                                <div class="col-md-6">
+                                    {% if project is defined %}
+                                        <h5><span class="text-muted">Project Name: </span>{{ project.description }}</h5>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row" >
+                                <div class="col-md-6">
+                                    {% if members is defined %}
+                                        <h3><span class="only-bottom-margi">Members:</span></h3>
+
+                                        {% for member in members %}
+                                            <h5>{{ member }}</h5>
+                                            {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+
+
+{% endblock %}

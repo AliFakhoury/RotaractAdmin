@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block body  %}
+    <body style="font-size:120%;" class="hold-transition skin-blue sidebar-mini">
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+
+    <style type="text/css">
+        tfoot option {
+            width: 100%;
+            padding: 2px;
+            border:1px solid black;
+        }
+    </style>
+
+    <div class="wrapper">
+        {% include 'AdminHeader.html.twig' %}
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper" style="min-height: 1000px;">
+            <!-- Content Header (Page header) -->
+            <section class="content-header" style="height: 50px;">
+                <ol class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                    <li class="active">Manage System Pages</li>
+                </ol>
+            </section>
+
+            <section class="content">
+                {% if canAdd %}
+                    <a href="{{ path('AddSystemPage',{'language':app.request.locale}) }}" ><h4 style="margin-right: 4%;float: right;"> Add Page <i  class="material-icons">plus_one</i></h4></a>
+                {% endif %}
+                <div class="row">
+
+                    <div class="col-md-12">
+
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">System Pages</h3>
+                            </div>
+
+                            <div class="box-body no-padding">
+                                <table id="example"  class="table table-hover"  >
+                                    <thead>
+                                    <tr>
+                                        <th>Page ID</th>
+                                        <th>Page Name</th>
+                                        <th>Page URL</th>
+                                        <th>Page Role</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for page in  pages %}
+                                        <tr>
+                                            <td> {{ page.id }} </td>
+                                            <td> {{ page.page_name }} </td>
+                                            <td> {{ page.page_url }} </td>
+                                            <td> {{ page.role_name }} </td>
+                                            <td>
+                                                {% if canEdit %}
+                                                    <a href="  {{ path('EditSystemPage',{'id':page.id})}}"><i class="material-icons">mode_edit</i></a>
+                                                {% endif %}
+                                                {% if canDelete %}
+                                                    <a href="  {{ path('DeleteSystemPage',{'id':page.id, 'language':app.request.locale})}}"><i class="material-icons">&#xe872;</i></a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </div>
+
+    </body>
+
+
+{% endblock %}

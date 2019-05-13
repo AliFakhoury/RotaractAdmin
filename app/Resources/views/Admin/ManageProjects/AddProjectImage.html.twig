@@ -1,0 +1,108 @@
+    {% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        #pagination{
+            float: right;
+            margin-right: 2%;
+        }
+
+    </style>
+{% endblock %}
+
+{% block body  %}
+    <body style="font-size:120%;" class="hold-transition skin-blue sidebar-mini">
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.js-datepicker').datepicker({
+                format: 'yyyy-mm-dd'
+            });
+        });
+
+        function onTextInput() {
+            var headOfProject = document.getElementById('form_headOfProject').value;
+            var dataList = document.getElementById('json-names');
+
+            $.ajax({
+                type: "GET",
+                url: '{{ path('returnUsers') }}',
+                data: {"data" : headOfProject},
+                dataType: 'json',
+                success: function(returned){
+                    console.log(returned[0].first_name);
+
+                    returned.forEach(function(person){
+                        var option = document.createElement('option');
+                        option.value = person.first_name + ' ' + person.last_name;
+                        dataList.appendChild(option);
+                    });
+                }
+            });
+
+            $("#json-names").empty();
+        }
+
+
+    </script>
+
+    <div id="container">
+        <div class="wrapper">
+
+            {% include 'AdminHeader.html.twig' %}
+
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper" style="min-height: 1000px;">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <ol class="breadcrumb">
+                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li class="active">Manage Projects</li>
+                    </ol>
+                </section>
+
+                <section class="content" style="margin-top: 2%">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box box-primary" style="width: 100%;">
+                                {% if FormError is defined%}
+                                    <div id="Alert" class="alert alert-success">{{ FormError }}
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a></div>
+
+                                {% endif %}
+                                {% if ErrorMessage is defined%}
+                                    <div class="alert alert-danger">{{ ErrorMessage }}
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a></div>
+
+                                {% endif %}
+
+
+                                {{ form_start(form, {'attr' : {'onsubmit' : 'return onSubmit();', 'onload' : 'onCreate();'}}) }}
+                                <h4>Project name</h4> {{ form_widget(form.projectName) }}
+                                <h4>Head Of Project</h4> {{ form_widget(form.headOfProject, {'attr' : {'oninput' : 'onTextInput()', 'list' : 'json-names'}}) }}
+                                <datalist id="json-names"></datalist>
+                                <h4>Project Date</h4> {{ form_widget(form.dateOfProject) }}
+                                <h4>Project Description</h4> {{ form_widget(form.description) }}
+
+                                <p></p>
+
+                                {{ form_widget(form.Submit)}}
+                                {{ form_widget(form.Clear)}}
+
+                                {{ form_end(form)}}
+                                <p></p>
+                                <a href="{{ path('ManageAdmins',{'pageNumber':pageNumber,'language':app.request.locale}) }}"  style="color:white;background-color:rgb(60,141,188)" class="btn btn-primary" >Back</a>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    </body>
+{% endblock %}
+

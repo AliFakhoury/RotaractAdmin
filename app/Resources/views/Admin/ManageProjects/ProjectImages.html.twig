@@ -1,0 +1,284 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{{ asset('lightboxGallery/css/lightboxgallery-min.css') }}">
+    <link rel="stylesheet" href="{{ asset('lightboxGalleryStyle/style.css') }}">
+
+    <style>
+        #pagination{
+            float: right;
+            margin-right: 2%;
+        }
+
+        .edit_hover_class
+        {
+            width:100px;
+            height:100px;
+            background-color:red;
+        }
+
+        .edit_hover_class a{
+            display:none;
+        }
+        .edit_hover_class:hover a {
+            display:block;
+        }
+    </style>
+    <link href='https://fonts.googleapis.com/css?family=Slabo+27px' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="{{ asset("compressor/compressor.js") }}"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+{% endblock %}
+
+{% block body  %}
+    <body style="font-size:120%;" class="hold-transition skin-blue sidebar-mini">
+
+    <div id="container">
+        <div class="wrapper">
+            {% include 'AdminHeader.html.twig' %}
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper" style="min-height: 1000px;">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <ol class="breadcrumb">
+                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li class="active">Manage Projects</li>
+                    </ol>
+                </section>
+
+                <div class="box box-primary" style="width: 100%; margin-top: 2%;">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Upload Images</h3>
+                    </div>
+
+                    <div class="box-body">
+                        <form>
+
+                        <div class="form-group" style="margin-right:2%" >
+                                    <label>Select Images</label>
+                                    <input type="file" name="img" multiple id="fileUpload">
+                              </div>
+                              <button id="uploadButton" type="button">Upload Images</button>
+                        </form>
+
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <section class="content" style="margin-top: 2%">
+                    {#<div class="container">#}
+
+                    {#</div>#}
+
+
+                        <h1>Project Name</h1>
+
+
+                        <div class="container">
+
+                            <div class="row">
+                                <div class="gallery">
+
+                                {% if images is defined %}
+                                    {% set counter = 0 %}
+
+                                    {% for image in images %}
+                                        {% set counter = counter + 1 %}
+                                        <a href="{{ asset('lightbox/images/image1.jpg')}}"><img src="{{ image.image_url }}"></a>
+
+                                        {% if counter == 4 %}
+                                            <div class="clear"></div>
+                                            {% set counter = 0 %}
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                {% endif %}
+
+                                </div>
+                                {#<div class="gallery">#}
+                                    {#<a href="{{ asset('lightbox/images/image1.jpg')}}" class="big"><img src="{{ asset('lightbox/images/thumbs/thumb1.jpg')}}" alt="" title="Beautiful Image" /></a>#}
+                                    {#<a href="{{ asset('lightbox/images/image2.jpg')}}"><img src="{{ asset('lightbox/images/thumbs/thumb2.jpg')}}" alt="" title=""/></a>#}
+                                    {#<a href="{{ asset('lightbox/images/image3.jpg')}}"><img src="{{ asset('lightbox/images/thumbs/thumb3.jpg')}}" alt="" title="Beautiful Image"/></a>#}
+                                    {#<a href="{{ asset('images/image4.jpg')}}"><img src="{{ asset('lightbox/images/thumbs/thumb4.jpg')}}" alt="" title=""/></a>#}
+                                    {#<div class="clear"></div>#}
+
+                                    {#<a href="{{ asset('lightbox/images/image5.jpg')}}"><img src="{{ asset('lightbox/images/thumbs/thumb5.jpg')}}" alt="" title=""/></a>#}
+                                    {#<a href="{{ asset('lightbox/images/image6.jpg')}}"><img src="{{ asset('lightbox/images/thumbs/thumb6.jpg')}}" alt="" title=""/></a>#}
+                                    {#<a href="{{ asset('lightbox/images/image7.jpg')}}" class="big"><img src="{{ asset('lightbox/images/thumbs/thumb7.jpg')}}" alt="" title=""/></a>#}
+                                    {#<a href="{{ asset('lightbox/images/image8.jpg')}}"><img src="{{ asset('lightbox/images/thumbs/thumb8.jpg')}}" alt="" title=""/></a>#}
+                                    {#<div class="clear"></div>#}
+
+                                    {#<a href="{{ asset('lightbox/images/image9.jpg')}}" class="big"><img src="{{ asset('lightbox/images/thumbs/thumb9.jpg')}}" alt="" title=""/></a>#}
+                                    {#<a href="{{ asset('lightbox/images/image10.jpg')}}"><img src="{{ asset('lightbox/images/thumbs/thumb10.jpg')}}" alt="" title=""/></a>#}
+                                    {#<a href="{{ asset('lightbox/images/image11.jpg')}}"><img src="{{ asset('lightbox/images/thumbs/thumb11.jpg')}}" alt="" title=""/></a>#}
+                                    {#<a href="{{ asset('lightbox/images/image12.jpg')}}"><img src="{{ asset('lightbox/images/thumbs/thumb12.jpg')}}" alt="" title=""/></a>#}
+                                    {#<div class="clear"></div>#}
+
+                                {#</div>#}
+
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    </body>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+
+        document.getElementById('fileUpload').addEventListener('change', compress, false);
+
+        function compress(event){
+            let fi   = document.getElementById('fileUpload');
+
+            const file = fi.files.item(0);
+
+            if (!file) {
+                console.log("Not found");
+                return;
+            }
+
+            let reader = new FileReader();
+
+            reader.onload = function (e) {
+                let img = new Image();
+                img.src = e.target.result;
+
+                img.onload = function () {
+                    w = this.width;
+                    h = this.height;
+                    new Compressor(file, {
+                        quality: 0.8,
+                        width:w,
+                        height:h,
+                        success(result) {
+                            const formData = new FormData();
+
+                            formData.append('file', result, result.name);
+                            console.log(formData);
+
+                            $.ajax({
+                                type: 'POST',
+                                url: "{{ path('uploadNormalController') }}",
+                                data: {'formData':formData, 'projectID': {{ project_id}}},
+                                processData: false,
+                                contentType: false,
+                                success: function () {
+
+                                    console.log("Normal");
+                                }
+                            })
+                        },
+                        error(err) {
+                            console.log(err.message);
+                        },
+                    });
+
+                }
+            };
+            reader.readAsDataURL(file);
+
+            new Compressor(file, {
+                quality: 0.6,
+                width:200,
+                height:200,
+                success(result) {
+                    const formData = new FormData();
+
+                    formData.append('file', result, result.name);
+                    console.log(formData);
+                    // Send the compressed image file to server with XMLHttpRequest.
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ path('uploadThumbnailController') }}",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function () {
+
+                            console.log("Thumbnail");
+                        }
+                    })
+                },
+                error(err) {
+                    console.log(err.message);
+                },
+            });
+            return 0;
+        }
+
+        function readImageFile(file) {
+
+        }
+
+        let numberOfImages;
+
+        jQuery(function($) {
+            $(document).on('click', '.lightboxgallery-gallery-item', function(event) {
+                event.preventDefault();
+                $(this).lightboxgallery({
+                    showCounter: true,
+                    showTitle: true,
+                    showDescription: true
+                });
+            });
+
+            $.ajax({
+                type : 'GET',
+                data: {"id" : {{ project_id }} },
+                dataType: "json",
+                url  : '{{ path('getProjectImagesCount') }}',
+                success: function(data) {
+                    numberOfImages = data[0]["COUNT(*)"] - 8;
+
+                    if(numberOfImages > 0){
+                        loadMoreButton = document.getElementById('loadMoreButton');
+                        loadMoreButton.style.display = 'block';
+                    }
+                }
+            });
+
+
+        });
+
+        function loadMore() {
+            numberOfImages = numberOfImages-8;
+            console.log(numberOfImages);
+            if(numberOfImages <= 0){
+                var loadMoreButton = document.getElementById('loadMoreButton');
+                loadMoreButton.style.display = 'none';
+            }
+            $.ajax({
+                type : 'GET',
+                data: {"id" : {{ project_id }} },
+                dataType: "json",
+                url  : '{{ path('getMoreProjectImages') }}',
+                success: function(data) {
+                        var newHtml = "";
+
+                        $.each(data, function(index, image){
+                            newHtml += "<a class=\"lightboxgallery-gallery-item\">";
+                            newHtml += "<div><img src = \""+image.image_url+"\"></div></a>";
+                        });
+
+                        $("#projects").append(newHtml);
+
+                        if(numberOfImages <= 0){
+                            loadMoreButton = document.getElementById('loadMoreButton');
+                            loadMoreButton.style.display = 'none';
+                        }
+                }
+            });
+        }
+        
+        function print() {
+            console.log("heiasd");
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block body  %}
+    <body style="font-size:120%;" class="hold-transition skin-blue sidebar-mini">
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+
+    <style type="text/css">
+        tfoot option {
+            width: 100%;
+            padding: 2px;
+            border:1px solid black;
+        }
+    </style>
+
+    <div class="wrapper">
+        {% include 'AdminHeader.html.twig' %}
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper" style="min-height: 1000px;">
+            <!-- Content Header (Page header) -->
+            <section class="content-header" style="height: 50px;">
+                <ol class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                    <li class="active">Manage Projects</li>
+                </ol>
+            </section>
+            <div style="float: right; margin-top: 2%">
+                {% if canAdd %}
+                    <a href="{{ path('AddProject') }}" ><h4 style="margin-right: 4%;margin-top:4%;float: right;"> Add Project<i  class="material-icons">add</i></h4></a>
+                {% endif %}
+            </div>
+
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">Manage Projects</h3>
+                            </div>
+
+                            <div class="box-body no-padding">
+                                <table id="example"  class="table table-hover"  >
+                                    <thead>
+                                        <tr>
+                                            <th>Project Id</th>
+                                            <th>Project Name</th>
+                                            <th>Head Of Project</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if projects is defined %}
+                                            {% for project in  projects %}
+                                                <tr>
+                                                    <td> {{ project.project_id }} </td>
+                                                    <td> {{ project.project_name }} </td>
+                                                    <td> {{ project.first_name }} {{ project.last_name }} </td>
+                                                    <td> {{ project.description }} </td>
+                                                    <td>
+                                                        {% if canView %}
+                                                            <a href="{{ path('DisplayProject',{'id':project.project_id })}}"><i  class="material-icons">&#xe8f4;</i></a>
+                                                        {% endif %}
+
+                                                        {% if canEdit %}
+                                                            <a href=" {{ path('EditProject',{'id':project.project_id})}}" ><i class="material-icons">edit</i></a>
+                                                            <a href=" {{ path('ProjectImages',{'id':project.project_id})}}" ><i class="material-icons">image</i></a>
+                                                        {% endif %}
+
+                                                        {% if canDelete %}
+                                                            <a href="{{ path('DeleteProject',{'id':project.project_id})}}"><i style="color: #AAB7B8    " class="material-icons">&#xe872;</i></a>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+
+                                <div class="box-footer clearfix" style="float:right;">
+                                    {% set link = '/RotaractAdminPage/web/app_dev.php/Admin/ManageProjects/' %}
+
+                                    {% include 'pagination/pagination.html.twig' with {
+                                    currentFilters: { 'pageNumber': pageNumber , 'language': app.request.locale },
+                                    currentPage: pageNumber,
+                                    paginationPath: link,
+                                    lastPage: numPages,
+                                    showAlwaysFirstAndLast: false
+                                    } only %}
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </div>
+    </body>
+{% endblock %}
